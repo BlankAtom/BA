@@ -14,7 +14,7 @@ public class Helpers
         // NuGetFramework targetFramework = NuGetFramework.Parse(framework);
         NuGetFramework targetFramework = string.IsNullOrEmpty(framework)
             ? GetNuGetFrameworkFromCurrent()
-            : NuGetFramework.ParseFrameworkName(framework, DefaultFrameworkNameProvider.Instance);
+            : NuGetFramework.Parse(framework);
 
         if (targetFramework == NuGetFramework.UnsupportedFramework)
         {
