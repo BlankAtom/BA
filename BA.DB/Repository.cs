@@ -1,8 +1,9 @@
 ﻿using System.Data;
 using System.Reflection;
 using Microsoft.Data.SqlClient;
+using MySql.Data.MySqlClient;
 
-namespace libplugtool;
+namespace BA.DB;
 
 public abstract class Repository<T> where T: class, IGetRowObjectArray
 {
@@ -65,4 +66,41 @@ public abstract class Repository<T> where T: class, IGetRowObjectArray
 
         transaction.Commit();
     }
+
+    public void Select()
+    {
+        string connectionString = "Server=localhost;Database=your_database_name;User=root;Password=your_password;";
+
+        using (var connection = new MySqlConnection(connectionString))
+        {
+            connection.Open();
+
+            string query = "SELECT * FROM user";
+
+            using (var command = new MySqlCommand(query, connection))
+            {
+                using (var reader = command.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            // 读取每一行的数据
+                            int     id    = reader.GetInt32("Id");
+                            string  name  = reader.GetString("Name");
+                            decimal price = reader.GetDecimal("Price");
+                            // reader.GetD
+                            // 进行数据操作，例如将数据添加到列表中
+                            Console.WriteLine($"ID: {id}, Name: {name}, Price: {price}");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("没有数据行.");
+                    }
+                }
+            }
+        }
+    }
+
 }

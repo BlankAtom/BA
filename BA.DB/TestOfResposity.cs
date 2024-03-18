@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace libplugtool;
+namespace BA.DB;
 
 public class TestOfResposity
 {
