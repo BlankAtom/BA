@@ -63,6 +63,8 @@ public class Helpers
             }
         }
 
+        PackageArchiveReader reader = new PackageArchiveReader(new MemoryStream());
+
         var nearest = reducer.GetNearest(targetFramework, dictionary.Keys);
 
         if (nearest == null)
