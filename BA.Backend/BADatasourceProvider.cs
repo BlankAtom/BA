@@ -14,7 +14,7 @@ public record BATableDescription(string ColumnName, string DataType, bool IsPrim
         return $"{{ ColumnName = {ColumnName}, DataType = {DataType}, IsPrimaryKey = {IsPrimaryKey}, IsUniqueKey = {IsUniqueKey}, IsNullable = {IsNullable}, DefaultConstraintID = {DefaultConstraintID}, DefaultValue = {DefaultValue} }}";
     }
 }
-public class BADatasourceProvider
+public abstract class BADatasourceProvider
 {
     // TODO 获取数据库结构
     public  Dictionary<string, BATableDescription> tableDescriptions;
@@ -82,13 +82,13 @@ public class BADatasourceProvider
 
     public abstract Dictionary<string, Dictionary<string, string>> GetAllTableAndFields();
 
-    public abstract Dictionary<string, BGDataTable> GetData(Dictionary<string, List<string>> property, Action<int, string> updateProgress = null);
-
-    public abstract Dictionary<string, List<string>> GetAllTablePrimaryKeys();
-
-    public abstract void SetData(Dictionary<string, BGDataTable> data, Action<int, string> updateProgress = null);
-
-    protected abstract List<Dictionary<string, BGDataColumn>> SelectQuery(string sql);
+    // public abstract Dictionary<string, BGDataTable> GetData(Dictionary<string, List<string>> property, Action<int, string> updateProgress = null);
+    //
+    // public abstract Dictionary<string, List<string>> GetAllTablePrimaryKeys();
+    //
+    // public abstract void SetData(Dictionary<string, BGDataTable> data, Action<int, string> updateProgress = null);
+    //
+    // protected abstract List<Dictionary<string, BGDataColumn>> SelectQuery(string sql);
 
     protected abstract void InsertQuery(string sql);
 
