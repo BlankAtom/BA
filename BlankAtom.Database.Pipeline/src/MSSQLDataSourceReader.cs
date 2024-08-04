@@ -6,17 +6,21 @@ namespace BlankAtom.Database.Pipeline;
 
 public class MSSQLDataSourceReader : IDatasourceReader
 {
-    private readonly SqlConnection connection;
+    // private readonly SqlConnection connection;
+    private readonly string connectionString;
     public MSSQLDataSourceReader(string connectionString)
     {
-        this.connection = new SqlConnection();
-        this.connection.ConnectionString = connectionString;
+        // this.connection = new SqlConnection();
+        this.connectionString = connectionString;
     }
 
     List<IDDLDetail> details;
 
     public List<IDDLDetail> ReadToDDL()
     {
+        var connection = new SqlConnection(connectionString);
+
+        connection.ConnectionString = connectionString;
         connection.Open();
         details = new List<IDDLDetail>();
 
@@ -40,16 +44,16 @@ public class MSSQLDataSourceReader : IDatasourceReader
 
         foreach (var TableName in list)
         {
-            DataTable tableSchema = GetTableSchema(this.connection, TableName);
+            DataTable tableSchema = GetTableSchema(connection, TableName);
             tableSchema.ExtendedProperties.Add("TableType", "BASE TABLE");
             details.Add(new SqlServerDDLDetail(TableName, tableSchema));
         }
 
         command.CommandText = $"SELECT VIEW_DEFINITION FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_NAME = @viewName";
         command.Parameters.Add("@viewName", SqlDbType.NVarChar);
-        foreach (var TableName in list)
+        foreach (var TableName in list2)
         {
-            DataTable tableSchema = GetTableSchema(this.connection, TableName);
+            DataTable tableSchema = GetTableSchema(connection, TableName);
             tableSchema.ExtendedProperties.Add("TableType", "VIEW");
 
             command.Parameters["@viewName"].Value = TableName;
@@ -64,6 +68,7 @@ public class MSSQLDataSourceReader : IDatasourceReader
             details.Add(new SqlServerDDLDetail(TableName, tableSchema));
         }
 
+        connection.Close();
         return details;
     }
 
@@ -88,13 +93,14 @@ public class MSSQLDataSourceReader : IDatasourceReader
     /// <inheritdoc />
     public List<DataTable> GetTableData()
     {
-        if(this.connection.State != ConnectionState.Open)
-            this.connection.Open();
+        using var connection = new SqlConnection(connectionString);
+        if(connection.State != ConnectionState.Open)
+            connection.Open();
 
         List<DataTable> data = new List<DataTable>();
         foreach (IDDLDetail detail in this.details)
         {
-            using (var command = new SqlCommand($"SELECT * FROM {detail.TableName}", this.connection))
+            using (var command = new SqlCommand($"SELECT * FROM {detail.TableName}", connection))
             {
                 DataTable table = new DataTable();
                 new SqlDataAdapter(command)

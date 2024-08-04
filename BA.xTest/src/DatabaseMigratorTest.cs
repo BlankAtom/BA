@@ -12,8 +12,8 @@ public class DatabaseMigratorTest
     public void MainTest()
     {
         ConnectionStringFactory stringFactory = new ConnectionStringFactory();
-        string src = stringFactory.CreateConnectionString("mssql", "bg248", "ORAPS_SCSS_BS_Chongjian", "sa", "Oraps123");
-        string des = stringFactory.CreateConnectionString("mssql", "bg248", "master", "sa", "Oraps123");
+        string src = stringFactory.CreateConnectionString("mssql", "www.rocael.cn,1434", "dev1", "sa", "0129forEver");
+        string des = stringFactory.CreateConnectionString("mssql", "www.rocael.cn,1434", "master", "sa", "0129forEver");
         // string src = "";
         // string des = "";
 
